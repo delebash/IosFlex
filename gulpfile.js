@@ -7,7 +7,7 @@ gulp.task('autoprefixer', function () {
     var sourcemaps   = require('gulp-sourcemaps');
     var autoprefixer = require('autoprefixer');
 
-    return gulp.src('./src/*.css')
+    return gulp.src('styles.css')
         .pipe(sourcemaps.init())
         .pipe(postcss([ autoprefixer({ browsers: ['last 2 versions'] }) ]))
         .pipe(sourcemaps.write('.'))
