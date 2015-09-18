@@ -1,5 +1,5 @@
 var gulp = require('gulp');
-
+var browserSync = require('browser-sync');
 
 // copies changed css files to the output directory
 gulp.task('autoprefixer', function () {
@@ -14,7 +14,26 @@ gulp.task('autoprefixer', function () {
         .pipe(gulp.dest('dest'));
 });
 
+gulp.task('serve', ['autoprefixer'], function(done) {
+    browserSync({
+        open: false,
+        port: 9000,
+        server: {
+            baseDir: ['.'],
+            middleware: function (req, res, next) {
+                res.setHeader('Access-Control-Allow-Origin', '*');
+                next();
+            }
+        }
+    }, done);
+});
 
+function reportChange(event) {
+    console.log('File ' + event.path + ' was ' + event.type + ', running tasks...');
+}
 
-
-gulp.task('default', ['autoprefixer']);
+gulp.task('watch', ['serve'], function () {
+    gulp.watch('**/*.html', browserSync.reload).on('change', reportChange);
+    gulp.watch('**/*.css', ['autoprefixer', browserSync.reload]).on('change', reportChange);
+});
+gulp.task('default', ['serve']);
